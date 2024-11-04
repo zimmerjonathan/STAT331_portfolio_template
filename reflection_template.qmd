@@ -1,6 +1,6 @@
 ---
 title: "STAT 331 Portfolio"
-author: "Your Name Goes Here"
+author: "Jonathan Zimmer"
 format: 
   html: 
     self-contained: true
@@ -11,7 +11,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an __.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an \_\_.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -23,6 +23,10 @@ execute:
 
 ```{r}
 #| label: wd-1-csv
+
+#from lab 2 question 1
+
+my_data <- read_csv("data/surveys.csv")
 
 ```
 
@@ -45,6 +49,16 @@ execute:
 ```{r}
 #| label: wd-2
 
+#lab 3 question 5
+
+teacher_evals_clean <- my_data %>%
+  rename(sex = gender) %>%
+  filter(no_participants >= 10) %>%
+  mutate(course_id = as.character(course_id),
+         teacher_id = as.character(teacher_id)) %>%
+  select(course_id, teacher_id, question_no, no_participants, resp_share, 
+         SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
+
 ```
 
 **WD-3: I can filter rows from a dataframe for a *variety* of data types (e.g., numeric, integer, character, factor, date).**
@@ -53,6 +67,13 @@ execute:
 
 ```{r}
 #| label: wd-3-numeric
+
+#lab 3 question 9
+
+teacher_evals_clean %>%
+  group_by(course_id, teacher_id) %>%
+  summarise(n_questions = n_distinct(question_no)) %>%
+  filter(n_questions == 9)
 
 ```
 
@@ -67,6 +88,15 @@ execute:
 
 ```{r}
 #| label: wd-3-factor
+
+#lab 3 question 12
+
+teacher_evals_clean %>%
+  filter(sex == "female", academic_degree %in% c("dr", "prof")) %>%
+  group_by(teacher_id) %>%
+  summarise(avg_resp_share = mean(resp_share, na.rm = TRUE)) %>%
+  arrange(desc(avg_resp_share)) %>%
+  slice(c(1, n()))  # Highest and lowest
 
 ```
 
@@ -84,6 +114,16 @@ execute:
 ```{r}
 #| label: wd-4-numeric
 
+#lab 3 question 5
+
+teacher_evals_clean <- my_data %>%
+  rename(sex = gender) %>%
+  filter(no_participants >= 10) %>%
+  mutate(course_id = as.character(course_id),
+         teacher_id = as.character(teacher_id)) %>%
+  select(course_id, teacher_id, question_no, no_participants, resp_share, 
+         SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
+
 ```
 
 -   character -- specifically a string (example must use functions from **stringr**)
@@ -97,6 +137,33 @@ execute:
 
 ```{r}
 #| label: wd-4-factor
+
+#lab 4 question 3
+
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County")) |>
+  mutate(region = fct_collapse(county_name,
+                               # Region 1: Superior California
+                               "Superior California" = c("Butte", "Colusa", "El Dorado", "Glenn", "Lassen", "Modoc", "Nevada", "Placer", "Plumas", "Sacramento", "Shasta", "Sierra", "Siskiyou", "Sutter", "Tehama", "Yolo", "Yuba"),
+                               # Region 2: Del Norte, Humboldt, Lake, Mendocino, Napa, Sonoma, Trinity
+                               "Del Norte and Northern Coast" = c("Del Norte", "Humboldt", "Lake", "Mendocino", "Napa", "Sonoma", "Trinity"),
+                               # Region 3: San Francisco Bay Area
+                               "San Francisco Bay Area" = c("Alameda", "Contra Costa", "Marin", "San Francisco", "San Mateo", "Santa Clara", "Solano"),
+                               # Region 4: Northern San Joaquin Valley and Sierra
+                               "Northern San Joaquin Valley" = c("Alpine", "Amador", "Calaveras", "Madera", "Mariposa", "Merced", "Mono", "San Joaquin", "Stanislaus", "Tuolumne"),
+                               # Region 5: Central Coast
+                               "Central Coast" = c("Monterey", "San Benito", "San Luis Obispo", "Santa Barbara", "Santa Cruz", "Ventura"),
+                               # Region 6: Central Valley
+                               "Central Valley" = c("Fresno", "Inyo", "Kern", "Kings", "Tulare"),
+                               # Region 7: Inland Empire
+                               "Inland Empire" = c("Riverside", "San Bernardino"),
+                               # Region 8: Los Angeles
+                               "Los Angeles" = c("Los Angeles"),
+                               # Region 9: Orange
+                               "Orange" = c("Orange"),
+                               # Region 10: San Diego and Imperial
+                               "San Diego Area" = c("Imperial", "San Diego")
+  ))
 
 ```
 
@@ -113,6 +180,14 @@ execute:
 
 ```{r}
 #| label: wd-5-left
+
+#lab 4 question 2
+
+ca_childcare <- childcare_costs %>%
+  left_join(counties, by = c("county_fips_code" = "county_fips_code")) %>%
+  filter(state_name == "California") %>%
+  select(county_fips_code, study_year, mhi_2018, mc_infant, mc_toddler, mc_toddler, mc_preschool,
+         names(counties))
 
 ```
 
@@ -134,6 +209,14 @@ execute:
 
 ```{r}
 #| label: wd-5-full
+
+#lab 5 question 1
+
+mastermind <- person %>%
+  inner_join(drivers_license, by = c("license_id" = "id")) %>%
+  inner_join(facebook_event_checkin, by = c("id" = "person_id")) %>%
+  filter(gender == "female", hair_color == "red", car_make == "Tesla", 
+         car_model == "Model S", event_name == "SQL Symphony Concert")
 
 ```
 
@@ -182,12 +265,33 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: r-2-1
 
+#lab 2 question 4
+
+ggplot(data = my_data,
+       mapping = aes(x=weight, y=hindfoot_length)) +
+  facet_wrap(~ species) +
+  geom_point(alpha=0.5) + 
+  labs(title = "Weight vs Hindfoot Length",
+       x = "Weight (g)",
+       y = "",
+       subtitle = "Hindfoot Length (mm)")
+
 ```
 
 -   Example of **dplyr** pipeline
 
 ```{r}
 #| label: r-2-2
+
+#lab 3 question 5
+
+teacher_evals_clean <- my_data %>%
+  rename(sex = gender) %>%
+  filter(no_participants >= 10) %>%
+  mutate(course_id = as.character(course_id),
+         teacher_id = as.character(teacher_id)) %>%
+  select(course_id, teacher_id, question_no, no_participants, resp_share, 
+         SET_score_avg, percent_failed_cur, academic_degree, seniority, sex)
 
 ```
 
@@ -223,6 +327,17 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-1-num
 
+#lab 2 question 4
+
+ggplot(data = my_data,
+       mapping = aes(x=weight, y=hindfoot_length)) +
+  facet_wrap(~ species) +
+  geom_point(alpha=0.5) + 
+  labs(title = "Weight vs Hindfoot Length",
+       x = "Weight (g)",
+       y = "",
+       subtitle = "Hindfoot Length (mm)")
+
 ```
 
 -   at least one numeric variable and one categorical variable
@@ -230,6 +345,16 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-2-num-cat
 
+#lab 2 question 8
+
+ggplot(data = my_data,
+       mapping = aes(x=species, y=weight)) +
+  geom_density_r +
+  geom_jitter(aes(color = species), alpha = 0.5) +
+  labs(title="Distribution of Weight Across Species",
+       x = "Species",
+       y = "Weight (g)") +
+  theme(axis.text.x = element_text(angle = 45))
 ```
 
 -   at least two categorical variables
@@ -243,6 +368,7 @@ I've done this in the following provided assignments:
 
 ```{r}
 #| label: dvs-2-date
+
 
 ```
 
@@ -275,6 +401,14 @@ I've done this in the following provided assignments:
 
 ```{r}
 #| label: dvs-3-1
+
+#challenge 2 question 2
+
+surveys |> 
+  ggplot(aes(x = weight, y = species, color = genus)) +
+  geom_boxplot() +
+  scale_color_manual(values = cdPalette_grey) +
+  labs(x = "Weight (g)", y = "", subtitle = "Species", legend = "Genus")
 
 ```
 
@@ -322,6 +456,15 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dvs-5-2
 
+#lab 4 question 4
+
+income_change <- ca_childcare %>%
+  filter(study_year %in% c(2008, 2018)) %>%
+  group_by(region, study_year) %>%
+  summarise(median_income = median(mhi_2018, na.rm = TRUE)) %>%
+  pivot_wider(names_from = study_year, values_from = median_income, names_prefix = "year_") %>%
+  arrange(desc(year_2018))
+
 ```
 
 **DVS-6: I can create tables which make my summaries clear to the reader.**
@@ -337,6 +480,8 @@ I've done this in the following provided assignments:
 
 ```{r}
 #| label: dvs-6-2
+
+
 
 ```
 
@@ -461,12 +606,19 @@ I've done this in the following provided assignments:
 ```{r}
 #| label: dsm-2-1
 
+#lab 4 question 8
+
+reg_mod1 <- lm(mc_infant ~ mhi_2018, data = ca_childcare)
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dsm-2-2
+
+#challenge 3 question 3
+
+chi_test <- chisq.test(table(teacher_evals_compare$SET_level, teacher_evals_compare$sen_level))
 
 ```
 
