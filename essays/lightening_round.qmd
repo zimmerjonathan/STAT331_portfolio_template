@@ -6,16 +6,22 @@ editor: visual
 
 **Answer each of the following questions with *one sentence* including a brief explanation.**
 
-1. Finish the sentence with another student’s name: "If [Name of Student] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
+1.  Finish the sentence with another student's name: "If \[Name of Student\] doesn't earn an A, then nobody should, because..." Explain your choice and your reasoning.
 
+If Chris Hawkins doesn't earn an A, then nobody should, because Chris completed assignments using proper code formatting and syntax. Additionally asked questions and contributed to the discord community creating a better learning environment for all students.
 
-2. What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
+1.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
 
+The hardest part of this class for me was completing revisions. This was the most difficult thing for me because I would complete a lab assignment and often forget about it due to a large portion of my time and energy being focused on completing my senior project.
 
-3. What was the easiest part of the class for you? Explain why.
+1.  What was the easiest part of the class for you? Explain why.
 
+The easiest part of this class was the practice assignments. I think this was the easiest part because I enjoyed completing the engaging mystery style problems in addition to working with a partner to learn how they would approach a problem.
 
-4. What part of the class surprised or interested you the most? Explain why.
+1.  What part of the class surprised or interested you the most? Explain why.
 
+The part of the class that surprised me the most was the workload. As an economics major the majority of my classes grade is determined fully on two midterms and a final exam. I had to spend a lot of time compelteing check-ins, practice assignments, labs, and final portfolio compared to my other classes, however I found I learned and retained more information.
 
-5. Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+1.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
+
+If I gave one piece of advice to future students, I would advise them to work on the portfolio after every assignment, to see how the work done in that assignment can be used in the final portfolio. This will help them complete the portfolio early and aid in their learning by reflecting on completed work.

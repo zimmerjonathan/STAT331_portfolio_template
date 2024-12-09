@@ -9,3 +9,74 @@ editor: visual
 -   Focus specifically on data science concepts and the skills we employed in learning them, not a laundry list of topics that you learned (those are in the syllabus, so I know them already).
 
 -   Focus on a small number of specific areas of growth for you that happened in STAT 331. Identify at least one artifact in your portfolio that illustrates each area of growth and explain how this artifact shows growth in the way you are describing.
+
+I have improved as a data scientist by learning more about data manipulation/wrangling, data visualization, and writing functions in R. As someone going into the field of business intelligence I have focused on learning SQL and data visualization software like AWS QuickSight. This class expanded my knowledge by learning how to do these things in R. I have expanded the tools in my toolset by learning concepts like data manipulation and visualization in R, and have been able to compare and contrast the benefits of R compared to the tools I already know. With data visualization software being primarily drag and drop, I am not always able to create exactly what I want. By using ggplot and writing code to create graphs, I can better specify what I truly want to create and display. Additionally, my previous econometrics and statistics classes have often given assignments with a fully cleaned dataset. This class showed me how to manipulate datasets using dplyr when the data is not the way you want it. I was able to use the skills I learned in this class when working on my senior project, where I needed to clean, filter, and join multiple datasets to be able to conduct my analysis. Lastly, learning how to write functions in R has showed me how I can take my R programming skills to the next level. Having taken multiple classes where R was used, I never actually wrote my own functions. Previously i only utilized built in functions and functions from imported libraries. Learning this skill has taught me how R can be used like other languages such as python or Julia.
+
+Artifact 1:
+
+This artifact comes from lab 4 question 6.
+
+This piece of code showcases my growth in data manipulation through using dplyr pipelines to manipulate data using things like pivot_longer, mutate, fct_recode, and fct_relevel.
+
+This piece of code
+
+```{r}
+
+
+ca_childcare %>%
+  pivot_longer(cols = c(mc_infant, mc_toddler, mc_preschool), 
+               names_to = "age_group", 
+               values_to = "median_price") %>%
+  mutate(age_group = fct_recode(age_group,
+                                 "Infants" = "mc_infant",
+                                 "Toddlers" = "mc_toddler",
+                                 "Preschoolers" = "mc_preschool")) %>%
+  mutate(age_group = fct_relevel(age_group, "Infants", "Toddlers", "Preschoolers")) %>%
+  ggplot(aes(x = study_year, y = median_price, color = region)) +
+  geom_line() +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE) +
+  facet_wrap(~ age_group, ncol = 3) +
+  labs(title = "Weekly Median Price for Center-Based Childcare ($)",
+       subtitle = "Median Price",
+       x = "Study Year",
+       y = "",
+       color = "California Region") +
+  scale_y_continuous(limits = c(100, 500)) + 
+  scale_x_continuous(breaks = seq(2008, 2018, by = 2)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 6))
+
+```
+
+Artifact 2:
+
+Lab 2 Question 4
+
+This piece of code shows my growth in data visualization through the use of ggplot. I effectively use to create the exact graph I want by doing things like setting the Y axis to nothing and moving its label to a subtitle to prevent people from having to tilt their heads.
+
+```{r}
+ggplot(data = my_data,
+       mapping = aes(x=weight, y=hindfoot_length)) +
+  facet_wrap(~ species) +
+  geom_point(alpha=0.5) + 
+  labs(title = "Weight vs Hindfoot Length",
+       x = "Weight (g)",
+       y = "",
+       subtitle = "Hindfoot Length (mm)")
+```
+
+Artifact 3:
+
+lab 7 question 4
+
+This piece of code shows my growth in writing functions. Here I wrote a function to carry out a specific task that otherwise would've led to repetitive code.
+
+```{r}
+rescale_01 <- function(x) {
+  if (!is.numeric(x)) stop("Input vector must be numeric.")
+  if (length(x) <= 1) stop("Input vector must have more than one element.")
+  
+  (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+}
+```
