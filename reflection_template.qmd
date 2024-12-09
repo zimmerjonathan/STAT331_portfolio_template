@@ -11,7 +11,7 @@ execute:
   echo: true
 ---
 
-[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be an C.
+[**My Grade:**]{.underline} I believe my grade equivalent to course work evidenced below to be a B-.
 
 [**Learning Objective Evidence:**]{.underline} In the code chunks below, provide code from Lab or Challenge assignments where you believe you have demonstrated proficiency with the specified learning target. Be sure to specify **where** the code came from (e.g., Lab 4 Question 2).
 
@@ -313,10 +313,18 @@ mastermind <- person %>%
 
 -   `semi_join()`
 
-lab 4 question 2
+lab 5
+
+*I revised this code to use a semi_join() to filter interviews for matching person_id. I learned that I can use semi_join() as a means of filtering*
 
 ```{r}
 #| label: wd-6-semi
+
+witness_interviews <- interview %>%
+  semi_join(person, by = c("person_id" = "id")) %>% 
+  inner_join(person, by = c("person_id" = "id")) %>% 
+  filter(person_id %in% witness_ids) %>%
+  select(name, person_id, transcript) 
 
 
 ```
@@ -680,6 +688,8 @@ ca_childcare %>%
 ```{r}
 #| label: dvs-2-3
 
+
+
 ```
 
 **DVS-3: I show creativity in my visualizations**
@@ -772,8 +782,16 @@ lowest_childcare_price <- ca_childcare %>%
 
 -   Example using `across()`
 
+Lab 7 question 1
+
 ```{r}
 #| label: dvs-4-across
+
+summary_table <- blackfootfish |> 
+  summarise(
+    All_Rows_With_Missing_Values = sum(if_any(everything(), is.na)),
+    across(everything(), ~ sum(is.na(.)), .names = "{.col}_missing")
+  )
 
 ```
 
@@ -852,15 +870,48 @@ teacher_evals_clean %>%
 
 -   Example 1
 
+Lab 8 Question 3
+
+*I revised my code for this problem by getting rid of the rename function and doing renaming within the select function. I learned that the select function is able to carry out both tasks of renaming and reorder.*
+
 ```{r}
 #| label: dvs-7-1
+
+
+final_table <- evals %>%
+  distinct(teacher_id, .keep_all = TRUE) %>%
+  mutate(sen_level = ifelse(seniority <= 4, "Junior (4 years or less)", "Senior (more than 4 years)")) %>%
+  pivot_longer(cols = c(sex, sen_level, academic_degree), names_to = "category", values_to = "value") %>%
+  count(category, value) %>%
+  pivot_wider(names_from = value, values_from = n, values_fill = 0) %>%
+  select(Female = female, Male = male, `Junior (4 years or less)`, `Senior (more than 4 years)`, `No Degree` = no_dgr, masters = ma, Doctorate = dr, Professor = prof) %>%
+  summarise(across(everything(), sum))
+
+final_table %>%
+  kable(
+    format = "html",
+    col.names = c("Female", "Male", "Junior", "Senior", "No Degree", "Masters", "Doctorate", "Professor"),
+    caption = "Demographics Summary Table"
+  )
 
 ```
 
 -   Example 2
 
+Lab 8 Question 4
+
 ```{r}
 #| label: dvs-7-2
+
+missing_values_table <- map_int(fish, ~ sum(is.na(.))) %>%
+  enframe(name = "variable", value = "missing_count")
+
+missing_values_table %>%
+  kable(
+    format = "html",
+    col.names = c("variable", "missing_count"),
+    caption = "Missing Values"
+  )
 
 ```
 
@@ -886,15 +937,31 @@ teacher_evals_clean %>%
 
 -   `across()`
 
+Lab 7 Question 1
+
 ```{r}
 #| label: pe-1-across
+
+
+summary_table <- blackfootfish |> 
+  summarise(
+    All_Rows_With_Missing_Values = sum(if_any(everything(), is.na)),
+    across(everything(), ~ sum(is.na(.)), .names = "{.col}_missing")
+  )
 
 ```
 
 -   `map()` functions
 
+Practice Activity 8 "Test your functions"
+
 ```{r}
 #| label: pe-1-map-1
+
+map_chr(.x = xmas$gift_item, 
+        .f = ~ pluralize_gift(gift = .x)
+        )
+
 
 ```
 
@@ -902,15 +969,33 @@ teacher_evals_clean %>%
 
 -   Function that operates on vectors
 
+Practice Activity 7 Question 2
+
 ```{r}
 #| label: pe-2-1
+
+
+divide_and_round <- function(vec){
+  vec <- vec / min(vec, na.rm = TRUE)
+  round(vec)
+}
 
 ```
 
 -   Function that operates on data frames
 
+Lab 7 Question 8
+
+*I revised my answer by changing my function from using a for loop to a vectorized function. I grew my understanding of vectorized functions can be used instead of for loops to apply apply the same function to multiple columns*
+
 ```{r}
 #| label: pe-2-2
+
+rescale_column <- function(data, var_names) {
+  data <- data %>%
+    mutate(across(all_of(var_names), rescale_01))
+  return(data)
+}
 
 ```
 
@@ -921,19 +1006,45 @@ teacher_evals_clean %>%
 ```{r}
 #| label: pe-3-across
 
+summary_table <- blackfootfish |> 
+  summarise(
+    All_Rows_With_Missing_Values = sum(if_any(everything(), is.na)),
+    across(everything(), ~ sum(is.na(.)), .names = "{.col}_missing")
+  )
+
 ```
 
 -   `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
 
+Practice Activity 9 Question 7
+
 ```{r}
 #| label: pe-3-map-1
+
+
+my_weights <- map_dbl(.x = 1:1000, 
+                      .f = ~ music_man(n_tromb = 76, n_cor = 110, n_reed = 1035)
+                      )
 
 ```
 
 -   `map()` function with **more than one** input (e.g., `map_2()` or `pmap()`)
 
+Practice Activity 8 "Test your function"
+
 ```{r}
 #| label: pe-3-map-2
+
+xmas <- xmas |> 
+  mutate(full_phrase = pmap_chr(.l = list(day_num   = day,
+                                          adjective = adjective, 
+                                          gift      = gift_item, 
+                                          verb      = verb, 
+                                          location  = location
+                                          ), 
+                                .f = make_phrase
+                                )
+         )
 
 ```
 
@@ -993,15 +1104,26 @@ ca_childcare %>%
 
 -   Example 1
 
+Practice Activity 9
+
 ```{r}
 #| label: dsm-1-1
+
+sum(rnorm(100, mean = 4.6, sd = 0.8) < 4)
 
 ```
 
 -   Example 2
 
+Practice Activity 9
+
 ```{r}
 #| label: dsm-1-2
+
+
+my_weights <- map_dbl(.x = 1:1000, 
+                      .f = ~ music_man(n_tromb = 76, n_cor = 110, n_reed = 1035)
+                      )
 
 ```
 
