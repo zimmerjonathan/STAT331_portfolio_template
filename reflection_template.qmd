@@ -331,8 +331,16 @@ witness_interviews <- interview %>%
 
 -   `anti_join()`
 
+Lab 5
+
+*This was revision to include an anti_join(). i learned I can use anti_join to find differences in two tables*
+
 ```{r}
 #| label: wd-6-anti
+
+non_event_attendees <- person %>%
+  anti_join(facebook_event_checkin, by = c("id" = "person_id"))
+
 
 ```
 
@@ -495,8 +503,23 @@ teacher_evals_clean <- my_data %>%
 
 -   Example of function stops
 
+Lab 7 question 4
+
+*I revised this code by assigning the x min and max to a variable. This reduced the amount of times I called the min() function. I learned that when using the same function multiple times, you should try to reduce the amount of times you use it.*
+
 ```{r}
 #| label: r-3-function-stops
+
+
+rescale_01 <- function(x) {
+  if (!is.numeric(x)) stop("Input vector must be numeric.")
+  if (length(x) <= 1) stop("Input vector must have more than one element.")
+  
+  x_min <- min(x, na.rm = TRUE)
+  x_max <- max(x, na.rm = TRUE)
+  
+  (x - x_min) / (x_max - x_min)
+}
 
 ```
 
